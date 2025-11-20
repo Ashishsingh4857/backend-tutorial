@@ -517,6 +517,7 @@ const getVideosByUser = asyncHandler(async (req, res) => {
           description: 1,
           views: 1,
           createdAt: 1,
+          updatedAt: 1,
           duration: 1,
           likesCount: 1,
           commentsCount: 1,
@@ -525,6 +526,7 @@ const getVideosByUser = asyncHandler(async (req, res) => {
             username: "$owner.username",
             avatar: "$owner.avatar",
           },
+          isPublished: 1,
         },
       },
     ]);
