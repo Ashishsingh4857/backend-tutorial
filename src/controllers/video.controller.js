@@ -120,7 +120,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
   }
 });
 const publishAVideo = asyncHandler(async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, visibility } = req.body;
   if (!title) throw new ApiError(400, "title is required");
 
   if (!description) throw new ApiError(400, "description is required");
@@ -153,6 +153,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
       },
       thumbnail: { url: thumbnail.url, public_id: thumbnail.public_id },
       owner: req.user?._id,
+      isPublished: visibility,
     });
     //check video is created
     const publishedVideo = await Video.findById(createdVideo?._id);
@@ -279,6 +280,7 @@ const getVideoById = asyncHandler(async (req, res) => {
           owner: 1,
           likesCount: 1,
           isLiked: 1,
+          isPublished: 1,
         },
       },
     ]);
@@ -387,7 +389,13 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
     return res
       .status(200)
-      .json(new ApiResponse(200, deleteVideo, "video deleted successfully"));
+      .json(
+        new ApiResponse(
+          200,
+          { _id: videoId, ...deletedVideo },
+          "video deleted successfully"
+        )
+      );
   } catch (error) {
     throw new ApiError(500, "something went wrong", error);
   }
